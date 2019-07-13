@@ -1,15 +1,27 @@
 window.addEventListener("load", ()=>{						
 	const canvas = document.querySelector("#canvas");
-	const context = canvas.getContext("2d"); 		
+	const context = canvas.getContext("2d"); 	
 
 	//	Dynamic sizing based on window size
 	canvas.height = window.innerHeight;
 	canvas.width = window.innerWidth;
+	context.fillRect(475,20,10,600);
+	context.fillRect(700,20,10,600);
+	context.fillRect(300,200,600,10);
+	context.fillRect(300,400,600,10);
 	
-	context.fillRect((window.innerWidth/2-150),20,10,600);
-	context.fillRect((window.innerWidth/2+150),20,10,600);
-	context.fillRect(300,(window.innerHeight/2-100),800,10);
-	context.fillRect(300,(window.innerHeight/2+100),800,10);
+	//creating button
+	const path = new Path2D()
+	path.rect(25,72,100,50);
+	path.closePath();
+	context.font = "20px Arial";
+	context.fillText("Clear",45,100,100,50);
+	context.fillStyle = "#FFFFFF"
+	context.fillStyle = "rgba(225,225,225,0.5)"
+	context.fill(path)
+	context.lineWidth = 2
+	context.strokeStyle = "#000000"
+	context.stroke(path)
 	
 	let painting = false;
 	
@@ -19,6 +31,49 @@ window.addEventListener("load", ()=>{
 	function startPosition(){
 		painting = true; 
 	}
+	
+	//function for the button 
+	function getXY(canvas, event){
+	  const rect = canvas.getBoundingClientRect()
+	  const y = event.clientY - rect.top
+	  const x = event.clientX - rect.left
+	  return {x:x, y:y}
+	}
+	
+	//listens for the button click to clear
+	canvas.addEventListener("click",  function (e) {
+	  //stops drawing on the button 
+	  painting = false;
+	  const XY = getXY(canvas, e)
+	  // if button at location is clicked perform clear operation
+	  if(context.isPointInPath(path, XY.x, XY.y)) {
+		 //	Dynamic sizing based on window size
+		canvas.height = window.innerHeight;
+		canvas.width = window.innerWidth;
+		context.fillRect(475,20,10,600);
+		context.fillRect(700,20,10,600);
+		context.fillRect(300,200,600,10);
+		context.fillRect(300,400,600,10);
+		/*
+		context.fillRect((window.innerWidth/2-150),20,10,600);
+		context.fillRect((window.innerWidth/2+150),20,10,600);
+		context.fillRect(300,(window.innerHeight/2-100),800,10);
+		context.fillRect(300,(window.innerHeight/2+100),800,10);*/
+		
+		//creating button
+		const path = new Path2D()
+		path.rect(25,72,100,50);
+		path.closePath();
+		context.font = "20px Arial";
+		context.fillText("Clear",45,100,100,50);
+		context.fillStyle = "#FFFFFF"
+		context.fillStyle = "rgba(225,225,225,0.5)"
+		context.fill(path)
+		context.lineWidth = 2
+		context.strokeStyle = "#000000"
+		context.stroke(path)
+	  }
+	}, false)
 	
 	function finishedPosition(){
 		painting = false;
@@ -43,15 +98,8 @@ window.addEventListener("load", ()=>{
 		
 	}
 	
-	//Need to add button to trigger this and clear screen
-	function clearScreen(){
-		context.clearRect(0, 0, canvas.width, canvas.height);
-	}
-	
 	//	EventListeners
 	canvas.addEventListener("mousedown", startPosition);
 	canvas.addEventListener("mouseup", finishedPosition);
 	canvas.addEventListener("mousemove",draw);
 });
-	
-
